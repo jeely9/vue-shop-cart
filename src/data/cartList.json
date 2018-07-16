@@ -1,0 +1,38 @@
+{
+  "productList": [
+    {
+      "pro_name": "【斯文】甘油 | 丙三醇",
+      "pro_brand": "skc",
+      "pro_place": "韩国",
+      "pro_purity": "99.7%",
+      "pro_min": "215千克",
+      "pro_depot": "上海仓海仓储",
+      "pro_num": 3,
+      "pro_img": "../../assets/goods-1.jpg",
+      "pro_price": 800
+    },
+    {
+      "pro_name": "【斯文】甘油 | 丙三醇",
+      "pro_brand": "skc",
+      "pro_place": "韩国",
+      "pro_purity": "99.7%",
+      "pro_min": "215千克",
+      "pro_depot": "北京仓海仓储",
+      "pro_num": 2,
+      "pro_img": "../../assets/goods-2.jpg",
+      "pro_price": 900
+    },
+    {
+      "pro_name": "【斯文】甘油 | 丙三醇",
+      "pro_brand": "skc",
+      "pro_place": "韩国",
+      "pro_purity": "99.7%",
+      "pro_min": "215千克",
+      "pro_depot": "青岛仓海仓储",
+      "pro_num": 1,
+      "pro_img": "../../assets/test.jpg",
+      "pro_price": 700
+    }
+  ]
+}
+
