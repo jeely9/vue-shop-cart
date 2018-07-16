@@ -3,7 +3,7 @@
     <div class="page-shopping-cart" id="shopping-cart">
       <h4 class="cart-title">购物清单</h4>
       <div class="cart-product-title clearfix">
-        <div class="td-check fl"><span class="check-span fl check-all"></span>全选</div>
+        <div class="td-check fl"><span class="check-span fl check-all" :class="{'check-true': checkAllFlag}" @click="checkAll()"></span>全选</div>
         <div class="td-product fl">商品</div>
         <div class="td-num fl">数量</div>
         <div class="td-price fl">单价(元)</div>
@@ -37,7 +37,7 @@
             <td class="td-total">
               <p class="red-text"><span class="total-text">{{item.pro_price*item.pro_num | formatValue}}</span></p>
             </td>
-            <td class="td-do"><a href="javascript:;" class="product-delect">删除</a></td>
+            <td class="td-do"><a href="javascript:;" class="product-delect" @click="delConfirm(item)">删除</a></td>
           </tr>
           </tbody>
         </table>
@@ -45,15 +45,34 @@
       <div class="cart-product-info">
         <a class="delect-product" href="javascript:;"><span></span>删除所选商品</a>
         <a class="keep-shopping" href="#"><span></span>继续购物</a>
-        <a class="btn-buy fr" href="javascript:;">去结算</a>
-        <p class="fr product-total">￥<span>1600</span></p>
-        <p class="fr check-num"><span>2</span>件商品总计（不含运费）：</p>
+        <!--<router-link class="btn-buy fr" tag="a" to="address.vue">去结算</router-link>-->
+        <a class="btn-buy fr" href="">去结算</a>
+        <p class="fr product-total"><span>{{  totalPrice  | formatValue }}</span></p>
+        <p class="fr check-num"><span>{{ totalProduct }}</span>件商品总计（不含运费）：</p>
       </div>
       <div class="cart-worder clearfix">
         <a href="javascript:;" class="choose-worder fl"><span></span>绑定跟单员</a>
         <div class="worker-info fl">
         </div>
       </div>
+      <!--删除弹框-->
+      <div class="md-modal modal-msg md-modal-transition" id="showModal" v-bind:class="{'md-show':delFlag}">
+        <div class="md-modal-inner">
+          <div class="md-top">
+            <button class="md-close" @click="delFlag=false">关闭</button>
+          </div>
+          <div class="md-content">
+            <div class="confirm-tips">
+              <p id="cusLanInfo">你确认删除此订单信息吗?</p>
+            </div>
+            <div class="btn-wrap col-2">
+              <button class="btn btn--m" id="btnModalConfirm" @click="delProduct()">Yes</button>
+              <button class="btn btn--m btn--red" id="btnModalCancel" @click="delFlag=false">No</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="md-overlay" v-if="delFlag"></div>
     </div>
   </div>
 </template>
@@ -61,11 +80,16 @@
 <script>
 
 export default {
-    data(){
-      return {
-        productList: []
-      }
-    },
+  data(){
+    return {
+      productList: [],
+      checkAllFlag: false,
+      totalPrice: 0,
+      totalProduct: 0,
+      delFlag:false,
+      cutProduct: ""
+    }
+  },
   filters: {
       formatValue: function(value){
           return "￥" + value.toFixed(2);
@@ -81,7 +105,7 @@ export default {
       cartView: function(){
         var _this = this
           this.$http.get("../static/cartList.json").then(function(res){
-              console.log(res.body.productList);
+              // console.log(res.body.productList);
               _this.productList = res.body.productList;
           })
       },
@@ -93,19 +117,54 @@ export default {
               move.pro_num --;
             }
           }
+          this.totalMoney();
       },
       selectItem: function(item){
           if(typeof item.checked == 'undefined'){
-                this.$set(item,"checked",true);
+                this.$set(item,"checked",true);          //注册一个checked功能
           }else{
               item.checked = ! item.checked;
           }
+          this.totalMoney();
+      },
+      checkAll: function(){
+          this.checkAllFlag = ! this.checkAllFlag;
+          var _this = this;
+          this.productList.forEach(function(item,index){
+            if(typeof item.checked == 'undefined'){
+              _this.$set(item,"checked",_this.checkAllFlag);          //注册一个checked功能
+            }else{
+              item.checked = _this.checkAllFlag;
+            }
+          });
+          this.totalMoney();
+      },
+      totalMoney: function(){
+          var _this = this;
+          this.totalPrice = 0;
+          this.totalProduct = 0;
+          this.productList.forEach(function(item,index){
+            if( item.checked ){
+              _this.totalPrice += item.pro_price*item.pro_num ;
+              _this.totalProduct = (index+1);
+            }
+          })
+      },
+      delConfirm: function(item){
+          this.delFlag = true;
+          this.cutProduct = item;
+      },
+      delProduct: function(){
+          var index = this.productList.indexOf(this.cutProduct);
+          this.productList.splice(index,1);
+          this.delFlag = false;
       }
   }
 }
 </script>
 
 <style>
+  @import url(../static/css/modal.css);
   .fl{
     float: left;
   }
