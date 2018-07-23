@@ -183,6 +183,6 @@
     }
 </script>
 
-<style scoped>
+<style>
   @import url(../static/css/checkout.css);
 </style>

@@ -1,19 +1,19 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
-import Router from 'vue-router'
 import VueResource from 'vue-resource'
-import Cart from './cart'
-
+import App from './app'
+import router from './router'
 
 Vue.config.productionTip = false
 
-Vue.use(VueResource)
-Vue.use(Router)
+Vue.use(VueResource);
+
 
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
-  components: { Cart },
-  template: '<Cart/>'
+  components: { App },
+  template: '<App/>',
+  router,
 })

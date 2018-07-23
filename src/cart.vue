@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="cart">
     <div class="page-shopping-cart" id="shopping-cart">
       <h4 class="cart-title">购物清单</h4>
       <div class="cart-product-title clearfix">
@@ -45,13 +45,13 @@
       <div class="cart-product-info">
         <a class="delect-product" href="javascript:;"><span></span>删除所选商品</a>
         <a class="keep-shopping" href="#"><span></span>继续购物</a>
-        <!--<router-link class="btn-buy fr" tag="a" to="address.vue">去结算</router-link>-->
-        <a class="btn-buy fr" href="">去结算</a>
+        <!--<router-link  to="address">去结算</router-link>-->
+        <a class="btn-buy fr" @click="goTo()">去结算</a>
         <p class="fr product-total"><span>{{  totalPrice  | formatValue }}</span></p>
         <p class="fr check-num"><span>{{ totalProduct }}</span>件商品总计（不含运费）：</p>
       </div>
       <div class="cart-worder clearfix">
-        <a href="javascript:;" class="choose-worder fl"><span></span>绑定跟单员</a>
+        <p class="choose-worder fl"><span></span>绑定跟单员</p>
         <div class="worker-info fl">
         </div>
       </div>
@@ -75,10 +75,9 @@
       <div class="md-overlay" v-if="delFlag"></div>
     </div>
   </div>
+  <!--<router-view></router-view>-->
 </template>
-
 <script>
-
 export default {
   data(){
     return {
@@ -103,10 +102,10 @@ export default {
   },
   methods: {
       cartView: function(){
-        var _this = this
+          var _this = this;
           this.$http.get("../static/cartList.json").then(function(res){
               // console.log(res.body.productList);
-              _this.productList = res.body.productList;
+              _this.productList = res.body.productList;                   //返回的数据在vue封装的body里面
           })
       },
       handelJ: function(move,way){
@@ -146,7 +145,7 @@ export default {
           this.productList.forEach(function(item,index){
             if( item.checked ){
               _this.totalPrice += item.pro_price*item.pro_num ;
-              _this.totalProduct = (index+1);
+              _this.totalProduct += item.pro_num;
             }
           })
       },
@@ -158,6 +157,10 @@ export default {
           var index = this.productList.indexOf(this.cutProduct);
           this.productList.splice(index,1);
           this.delFlag = false;
+      },
+      goTo: function(){
+        let self = this; // 定义一个变量指向vue实例
+        self.$router.push('address');
       }
   }
 }
@@ -333,7 +336,9 @@ export default {
     width: 110px;
     background: #ff7700;
     text-align: center;
-    margin-left: 30px; }
+    margin-left: 30px;
+    cursor: pointer;
+  }
   .page-shopping-cart .cart-worder {
     padding: 20px; }
   .page-shopping-cart .cart-worder .choose-worder {
